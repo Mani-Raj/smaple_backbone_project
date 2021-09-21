@@ -1,0 +1,225 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <link rel = "stylesheet" href="/assets/style.css">
+        <script src="/assets/js/jquery-3.4.1.js"></script>
+        <script src="/assets/js/underscore.js"></script>
+        <script src="/assets/js/backbone-min.js"></script>
+    
+    <script id="home" type="text/html">
+        <div class="container" style="margin-top:30px; text-align:center;">
+            <a href = "#register"> <button type="submit" id="regbtn" class="btn btn-success">Register</button> </a>
+            <a href = "#login"> <button type="submit" id="logbtn" class="btn btn-success">Login</button> </a> 
+            <a href = ""> <button type="submit" id="homebtn" class="btn btn-success">Home</button>  </a>   
+         <div>  
+    </script>
+
+    <script id="login" type="text/html">
+        <div class="container">
+            <label class ="">Name:</label><input class="form-control" type="text" placeholder="User Name" id="name"> <br>
+            <label>password:</label><input class="form-control" type ="password" placeholder="password" id="password">  <br>
+            <a href="#log"> <button type="submit" class="btn btn-primary" id="log">Login</button>  </a>
+            <a href=""> <button type="submit" class="btn btn-success" id="reg">Home</button> </a>
+        </div>
+    </script>
+
+    <script id="register" type="text/html">
+                <div class="container">
+                <label class ="">Name:</label><input id ="name" class="form-control" type="text" placeholder="User Name"  name="name" id="name"> <br>
+                <label>email: </label><input   class="form-control" type="email" placeholder="email" name="email" >  <br>
+                <label>phone: </label><input   class="form-control" type="tel" placeholder="phone number"  name="phone">  <br>
+                <label>password:</label><input class="form-control" type ="password" placeholder="password" name="password" >  <br>
+    
+                <a href="/#register/submit"><button type="submit" id="regbtn" class="btn btn-primary">Register</button> 
+
+                <a href=""> <button type="submit" id="homebtn" class="btn btn-success">Home</button> </a>
+                </div>
+    </script>
+
+    <script id="submitview" type="text/html">
+        <div class="container">
+        </div>
+    </script>
+
+
+    </head>
+    <body>
+        <p>im from remote repository</p>
+        <h1>this is done in after clone of project</h1>
+        <h2> this second line in local repository</h2>
+        <h3>this is third insertion..!@</h3>
+        <h4>this is third insertion..!@</h4>
+      <div id="loadcontent"> </div>
+      <div id="loadextra"> 
+          <iframe> </iframe>
+      </div>
+            
+    </body>
+    <script>
+         Backbone.emulateHTTP = true;
+         
+        var model = Backbone.Model.extend({
+            url: '/submit',
+            defaults:{
+                name: null,
+                email: null,
+                phone: null,
+                password: null
+            }
+        });
+
+        var modelobj = new model();
+
+        var  homeview  = Backbone.View.extend({
+            template: _.template($("#home").html()),
+            el: "#loadcontent",
+            initialize: function(){
+                this.render();
+            },
+            render: function(){
+                this.$el.html(this.template());
+            }
+        });
+
+        var  loginview  = Backbone.View.extend({
+            template: _.template($("#login").html()),
+            el: "#loadextra",
+            initialize: function(){
+                this.render();
+            },
+            render: function(){
+                this.$el.html(this.template());
+            }
+        });
+
+
+        
+
+
+        var  registerview  = Backbone.View.extend({
+            template: _.template($("#register").html()),
+            el: "#loadextra",
+            router: router, 
+            model: modelobj,
+            mani: function(){
+
+            },
+            events: {
+                "click #regbtn": "registerAction"
+            },
+
+            registerAction: function(){
+                this.model.set({
+                    name: $('[name = "name"]').val(),
+                    email: $('[name = "email"]').val(),
+                    phone: $('[name = "phone"]').val(),
+                    password: $('[name = "password"]').val(),
+
+
+                });
+                
+                var data = this.model.toJSON();
+                var string = JSON.stringify(data);
+                    return $.ajax({
+                        url:"/submit",
+                        contentType: 'application/json',
+                        method: "POST",
+                        data: string})
+                        .done(function(msg){ 
+                            alert("Registreation successfull..! Our system  " + msg);
+                            // var subview = new submitview();
+                        })
+                        .fail(function(){alert("ajax req res failed...!")});
+
+
+            //    this.model.save(data, 
+            //     {success: function(){
+            //         console.log();
+            //         alert('yes');
+            //     },
+            //     error: function(){
+            //         console.log();
+            //         alert('no');
+            //     }
+            // });
+            },
+
+            initialize: function(){
+                this.render();
+            },
+
+            render: function(){
+                this.$el.html(this.template());
+            }
+            
+            
+        });
+       
+        // var submitview = Backbone.View.extend({
+        //     template: _.template($("#submitview").html()),
+        //     el:"#container",
+        //     model:modelobj,
+        //     post_to_server : function(){
+        //     var data = this.model.toJSON();
+        //     var string = JSON.stringify(data);
+        //         return $.ajax({
+        //                 url:"/submit",
+        //                 contentType: 'application/json',
+        //                 method: "POST",
+        //                 data: string})
+        //                 .done(function(msg){ 
+        //                     alert("data saved " + msg);
+        //                     var subview = new submitview();})
+        //                 .fail(function(){alert("ajax req res failed...!")});
+        //     },
+        //     initialize: function(){
+        //         this.render();
+        //     },
+        //     render:function(){
+        //         this.$el.html(this.template());
+        //     }
+        // });
+
+  
+
+        var routeclass = Backbone.Router.extend({
+            model:modelobj,
+            routes: {
+                "": "homepage",
+                "register": "registerpage",
+                "login" : "loginpage",
+                "login(/:name)": "homepage",
+                "register/submit" : "submitpage"
+            },
+            homepage: function(){
+                var home = new homeview();
+                
+            },
+            registerpage: function(){
+                var register = new registerview(); 
+                
+            },
+            loginpage: function(){
+                var login = new loginview();
+            },
+            submitpage: function(){
+                // var subview = new submitview();
+                var register = new registerview(); 
+                console.log("below model from route")
+                console.log(this.model);
+                console.log('registration done.. notifi from route');
+            }
+        });
+
+        var router = new routeclass();
+
+        Backbone.history.start();
+
+
+    </script>
+</html>
+
